@@ -1,3 +1,4 @@
+
 class Organization:
     def __init__ (self, called, longName, legalName, uri, emailSuffix, dataRegistered):
        self.called = called
