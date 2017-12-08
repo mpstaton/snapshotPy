@@ -3,6 +3,7 @@ from flask_restful import Resource, Api, reqparse
 from flask_jwt import JWT
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import JSON
+import psycopg2
 
 from resources.organization import Organization
 
