@@ -1,30 +1,29 @@
-from db import db
+from database import connect
 
-class OrganizationModel(db.Model):
-    __tablename__ = 'organization'
 
-    id = db.Column(db.Integer, primary_key=True)
-    called = db.Column(db.String(80))
-    longName = db.Column(db.String(80))
-    legalName = db.Column(db.String(80))
-    uri = db.Column(db.String(80))
-    emailSuffix = db.Column(db.String(80))
-
-    def __init__(self, called, longName, legalName, uri, emailSuffix):
+class Organization:
+    def __init__(self, called=None, longName=None, legalName=None, uri=None, emailSuffix=None, uuid=None,
+                 classifiers=None):
         self.called = called
         self.longName = longName
         self.legalName = legalName
         self.uri = uri
         self.emailSuffix = emailSuffix
+        self.uuid = uuid
+        self.classifiers = classifiers
 
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
+    def addToDB(self):
+        with connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(
+                    'INSERT INTO organizations (called, longName, legalName, uri, emailSuffix, classifiers) VALUES ('
+                    '%s, %s, %s, %s, %s, %s)',
+                    (self.called, self.longName, self.legalName, self.uri, self.emailSuffix, self.classifiers))
 
     @classmethod
-    def find_by_called(cls, called):
-        return cls.query.filter_by(called=called).first()
-
-    @classmethod
-    def find_by_id(cls, _id):
-        return cls.query.filter_by(id=_id).first()
+    def getByUUID(cls, uuid):
+        with connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute('SELECT * FROM organizations WHERE uuid=%s', (uuid,))
+                row = cursor.fetchone()
+                return cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7])

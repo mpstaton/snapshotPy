@@ -2,7 +2,7 @@ from database import connect
 
 
 class Person:
-    def __init__(self, called, givenName=None, surName=None, maidenName=None, gender=None, birthDate=None, uuid=None,
+    def __init__(self, called=None, givenName=None, surName=None, maidenName=None, gender=None, birthDate=None, uuid=None,
                  hasUserAccount=False, isTeamMember=False):
         self.called = called
         self.givenName = givenName
@@ -14,7 +14,6 @@ class Person:
         self.hasUserAccount = hasUserAccount
         self.isTeamMember = isTeamMember
 
-    # the below code is an attempt to get scripting working with Postgres
     def addToDB(self):
         with connect() as conn:
             with conn.cursor() as cursor:

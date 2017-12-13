@@ -17,7 +17,6 @@ class ContactCard:
         self.location_uuid = location_uuid
         self.uuid = uuid
 
-    # the below code is an attempt to get scripting working with Postgres
     def addToDB(self):
         with connect() as conn:
             with conn.cursor() as cursor:
@@ -32,6 +31,6 @@ class ContactCard:
     def getByUUID(cls, uuid):
         with connect() as conn:
             with conn.cursor() as cursor:
-                cursor.execute('SELECT * FROM "contactCards" WHERE uuid=%s', (uuid,))
+                cursor.execute('SELECT * FROM contactCards WHERE uuid=%s', (uuid,))
                 row = cursor.fetchone()
                 return cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])

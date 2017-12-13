@@ -10,4 +10,3 @@ newContactCard = ContactCard(
 )
 
 newContactCard.addToDB()
-
