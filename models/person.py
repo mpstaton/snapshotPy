@@ -1,16 +1,16 @@
 from database import connect
 
+
 class Person:
-    def __init__(self, called, givenName=None,
-                 surName=None, maidenName=None,
-                 birthDate=None, gender=None,
-                 hasUserAccount=False, isTeamMember=False, id=None):
+    def __init__(self, called, givenName=None, surName=None, maidenName=None, gender=None, birthDate=None, uuid=None,
+                 hasUserAccount=False, isTeamMember=False):
         self.called = called
         self.givenName = givenName
         self.surName = surName
         self.maidenName = maidenName
-        self.birthDate = birthDate
         self.gender = gender
+        self.birthDate = birthDate
+        self.uuid = uuid
         self.hasUserAccount = hasUserAccount
         self.isTeamMember = isTeamMember
 
@@ -19,12 +19,15 @@ class Person:
         with connect() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(
-                    'INSERT INTO persons (id, called, givenName, surName, maidenName, birthDate, gender, hasUserAccount, '
-                    'isTeamMember) VALUES (1, %s, %s, %s, %s, %s, %s, %s, %s)',
-                    (self.called, self.givenName, self.surName, self.maidenName, self.birthDate, self.gender,
+                    'INSERT INTO persons (called, givenName, surName, maidenName, gender, birthDate, hasUserAccount, '
+                    'isTeamMember) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
+                    (self.called, self.givenName, self.surName, self.maidenName, self.gender, self.birthDate,
                      self.hasUserAccount, self.isTeamMember))
-            # conn.commit()
-            # conn.close()
 
-person1 = Person(called="testperson", givenName="givenname", surName="surname", gender="Male", hasUserAccount="True", isTeamMember="True")
-person1.addToDB()
+    @classmethod
+    def getByUUID(cls, uuid):
+        with connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute('SELECT * FROM persons WHERE uuid=%s', (uuid,))
+                row = cursor.fetchone()
+                return cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
