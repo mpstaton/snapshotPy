@@ -20,7 +20,7 @@ class Organization(Resource):
 		organization.update(data)
 		return organization
 
-	def delete(self)
+	def delete(self):
 		return {'message': 'Organization deleted'}
 
 class OrganizationList(Resource):
