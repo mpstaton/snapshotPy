@@ -1,10 +1,8 @@
 
 from models.contactCard import ContactCard
-from models.person import Person
 
-person = Person.getByUUID('2258da15-12e1-45b3-bae6-9214cc632636')
 newContactCard = ContactCard(
-    person_uuid=person.uuid,
+    person_uuid='2258da15-12e1-45b3-bae6-9214cc632636',
     email='don@learnstart',
     mobileLine='917-514-7903',
     startDate='201703',
