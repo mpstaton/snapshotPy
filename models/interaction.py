@@ -3,8 +3,9 @@ import psycopg2.extensions as exten
 import psycopg2.extras
 
 class Interaction:
+    # interactionMaterial_uuids and contactCard_uuids can't be None, as the adaptor of uuid[] doesn't adapt None type
     def __init__(self, location_uuid=None, interactionType=None, startTime=None, endTime=None,
-                 uuid=None, interactionMaterial_uuids=None, contactCard_uuids=None):
+                 uuid=None, interactionMaterial_uuids=[], contactCard_uuids=[]):
         self.location_uuid = location_uuid
         self.interactionType = interactionType
         self.startTime = startTime
@@ -14,7 +15,6 @@ class Interaction:
         self.contactCard_uuids = contactCard_uuids
 
     def addToDB(self):
-        #TODO: cannot adapt None type
         psycopg2.extras.register_uuid()
         with connect() as conn:
             with conn.cursor() as cursor:
@@ -29,4 +29,4 @@ class Interaction:
             with conn.cursor() as cursor:
                 cursor.execute('SELECT * FROM interactions WHERE uuid=%s', (uuid,))
                 row = cursor.fetchone()
-                return cls(row[1], row[2], row[3], row[4], row[5], row[6])
+                return cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7])
