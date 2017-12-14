@@ -1,7 +1,9 @@
 from database import connect
+import uuid
+import psycopg2.extras
 
 class CollectedDataPoint:
-    def __init__(self, variableHandle=None, timeFrame=None, value=None, organization_uuid=None, uuid=None, interactionMaterial_uuid=None):
+    def __init__(self, variableHandle=None, timeFrame=None, value=None, organization_uuid=None, uuid=uuid.uuid4(), interactionMaterial_uuid=None):
         self.variableHandle = variableHandle
         self.timeFrame = timeFrame
         self.value = value
@@ -9,13 +11,14 @@ class CollectedDataPoint:
         self.uuid = uuid
         self.interactionMaterial_uuid = interactionMaterial_uuid
 
+        psycopg2.extras.register_uuid()
+
     def addToDB(self):
         with connect() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(
-                    'INSERT INTO collectedDataPoints (variableHandle, timeFrame, value, organization_uuid, '
-                    'interactionMaterial_uuid) VALUES (%s, %s, %s, %s, %s)',
-                    (self.variableHandle, self.timeFrame, self.value, self.organization_uuid,
+                    'INSERT INTO collectedDataPoints (variableHandle, timeFrame, value, organization_uuid, uuid, interactionMaterial_uuid) VALUES (%s, %s, %s, %s, %s, %s)',
+                    (self.variableHandle, self.timeFrame, self.value, self.organization_uuid, self.uuid,
                      self.interactionMaterial_uuid))
 
     @classmethod

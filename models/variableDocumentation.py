@@ -1,8 +1,11 @@
 from database import connect
+import uuid
+import psycopg2.extras
 
 
 class VariableDocumentation:
-    def __init__(self, handle=None, completeName=None, acronym=None, inputVariations=None, classifiers=None, description=None, uuid=None):
+    def __init__(self, handle=None, completeName=None, acronym=None, inputVariations=None, classifiers=None,
+                 description=None, uuid=uuid.uuid4()):
         self.handle = handle
         self.completeName = completeName
         self.acronym = acronym
@@ -11,13 +14,17 @@ class VariableDocumentation:
         self.description = description
         self.uuid = uuid
 
+        psycopg2.extras.register_uuid()
+
 
     def addToDB(self):
         with connect() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(
-                    'INSERT INTO variableDocumentation (handle, completeName, acronym, inputVariations, classifiers, description) VALUES (%s, %s, %s, %s, %s, %s)',
-                    (self.handle, self.completeName, self.acronym, self.inputVariations, self.classifiers, self.description))
+                    'INSERT INTO variableDocumentation (handle, completeName, acronym, inputVariations, classifiers, '
+                    'description, uuid) VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                    (self.handle, self.completeName, self.acronym, self.inputVariations, self.classifiers,
+                     self.description, self.uuid))
 
     @classmethod
     def getByUUID(cls, uuid):

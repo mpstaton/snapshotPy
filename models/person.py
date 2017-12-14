@@ -1,9 +1,11 @@
 from database import connect
+import uuid
+import psycopg2.extras
 
 
 class Person:
-    def __init__(self, called=None, givenName=None, surName=None, maidenName=None, gender=None, birthDate=None, uuid=None,
-                 hasUserAccount=False, isTeamMember=False):
+    def __init__(self, called=None, givenName=None, surName=None, maidenName=None, gender=None, birthDate=None,
+                 uuid=uuid.uuid4(), hasUserAccount=False, isTeamMember=False):
         self.called = called
         self.givenName = givenName
         self.surName = surName
@@ -14,14 +16,16 @@ class Person:
         self.hasUserAccount = hasUserAccount
         self.isTeamMember = isTeamMember
 
+        psycopg2.extras.register_uuid()
+
     def addToDB(self):
         with connect() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(
-                    'INSERT INTO persons (called, givenName, surName, maidenName, gender, birthDate, hasUserAccount, '
-                    'isTeamMember) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
+                    'INSERT INTO persons (called, givenName, surName, maidenName, gender, birthDate, uuid, '
+                    'hasUserAccount, isTeamMember) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)',
                     (self.called, self.givenName, self.surName, self.maidenName, self.gender, self.birthDate,
-                     self.hasUserAccount, self.isTeamMember))
+                     self.uuid, self.hasUserAccount, self.isTeamMember))
 
     @classmethod
     def getByUUID(cls, uuid):

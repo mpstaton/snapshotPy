@@ -1,8 +1,10 @@
 from database import connect
+import uuid
+import psycopg2.extras
 
 
 class Organization:
-    def __init__(self, called=None, longName=None, legalName=None, uri=None, emailSuffix=None, uuid=None,
+    def __init__(self, called=None, longName=None, legalName=None, uri=None, emailSuffix=None, uuid=uuid.uuid4(),
                  classifiers=None):
         self.called = called
         self.longName = longName
@@ -12,13 +14,15 @@ class Organization:
         self.uuid = uuid
         self.classifiers = classifiers
 
+        psycopg2.extras.register_uuid()
+
     def addToDB(self):
         with connect() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(
-                    'INSERT INTO organizations (called, longName, legalName, uri, emailSuffix, classifiers) VALUES ('
-                    '%s, %s, %s, %s, %s, %s)',
-                    (self.called, self.longName, self.legalName, self.uri, self.emailSuffix, self.classifiers))
+                    'INSERT INTO organizations (called, longName, legalName, uri, emailSuffix, uuid, classifiers) '
+                    'VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                    (self.called, self.longName, self.legalName, self.uri, self.emailSuffix, self.uuid, self.classifiers))
 
     @classmethod
     def getByUUID(cls, uuid):
