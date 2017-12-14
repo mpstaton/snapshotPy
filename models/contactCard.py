@@ -19,6 +19,46 @@ class ContactCard:
         self.location_uuid = location_uuid
         self.uuid = uuid
 
+       '''
+       json data model for ContactCards
+       {personalEmails: [""],
+       currentMobileNumber: "",
+       
+       "currentRole":
+            {
+                "title" : "",
+                "organization_uuid" : "",
+                "email" : "",
+                "mobileLine" : "",
+                "startDate" : "",
+                "roleDescription" : "",
+                "location": {
+                    "location_uuid": "",
+                    "locationName": "",
+                    "locationAddress": ""
+                }
+            },
+        "previousRoles": [
+            {
+                "title" : "",
+                "organization_uuid" : "",
+                "email" : "",
+                "startDate" : "",
+                "endDate"
+                "roleDescription" : "",
+                "location": {
+                    "location_uuid": "",
+                    "locationName": "",
+                    "locationAddress": ""
+                }
+            }
+        ]
+        
+                
+       }
+       '''
+
+
         psycopg2.extras.register_uuid()
 
     def addToDB(self):
