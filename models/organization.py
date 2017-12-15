@@ -31,3 +31,29 @@ class Organization:
                 cursor.execute('SELECT * FROM organizations WHERE uuid=%s', (uuid,))
                 row = cursor.fetchone()
                 return cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7])
+
+    @classmethod
+    # Case insensitive search by called
+    def findByCalled(cls, called):
+        with connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute('SELECT * FROM organizations WHERE called ILIKE %s', ("%" + called + "%", ))
+                rows = cursor.fetchall()
+                return [cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7]) for row in rows]
+
+
+
+
+# class Company(Organization):
+#     def __init__(self, called, longName, legalName, uri, emailSuffix, dataRegistered):
+#         super().__init__(called, longName, legalName, uri, emailSuffix, dataRegistered)
+#
+#
+# class PortfolioCompany(Company):
+#     def __init__(self, called="", longName="", legalName="", uri="", emailSuffix="", dataRegistered=""):
+#         super().__init__(called, longName, legalName, uri, emailSuffix, dataRegistered)
+#
+#
+# makeSchool = PortfolioCompany(called="MakeSchool", legalName="Make Games With Us", uri="http://makeschool.com")
+#
+# print(makeSchool.legalName)
