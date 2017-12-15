@@ -19,47 +19,46 @@ class ContactCard:
         self.location_uuid = location_uuid
         self.uuid = uuid
 
-       '''
-       json data model for ContactCards
-       {personalEmails: [""],
-       currentMobileNumber: "",
-       
-       "currentRole":
-            {
-                "title" : "",
-                "organization_uuid" : "",
-                "email" : "",
-                "mobileLine" : "",
-                "startDate" : "",
-                "roleDescription" : "",
-                "location": {
-                    "location_uuid": "",
-                    "locationName": "",
-                    "locationAddress": ""
-                }
-            },
-        "previousRoles": [
-            {
-                "title" : "",
-                "organization_uuid" : "",
-                "email" : "",
-                "startDate" : "",
-                "endDate"
-                "roleDescription" : "",
-                "location": {
-                    "location_uuid": "",
-                    "locationName": "",
-                    "locationAddress": ""
-                }
-            }
-        ]
-        
-                
-       }
-       '''
-
-
         psycopg2.extras.register_uuid()
+
+
+       # json data model for ContactCards
+       # {personalEmails: [""],
+       # currentMobileNumber: "",
+       #
+       # "currentRole":
+       #      {
+       #          "title" : "",
+       #          "organization_uuid" : "",
+       #          "email" : "",
+       #          "mobileLine" : "",
+       #          "startDate" : "",
+       #          "roleDescription" : "",
+       #          "location": {
+       #              "location_uuid": "",
+       #              "locationName": "",
+       #              "locationAddress": ""
+       #          }
+       #      },
+       #  "previousRoles": [
+       #      {
+       #          "title" : "",
+       #          "organization_uuid" : "",
+       #          "email" : "",
+       #          "startDate" : "",
+       #          "endDate"
+       #          "roleDescription" : "",
+       #          "location": {
+       #              "location_uuid": "",
+       #              "locationName": "",
+       #              "locationAddress": ""
+       #          }
+       #      }
+       #  ]
+       #
+       #
+       # }
+
 
     def addToDB(self):
         with connect() as conn:
@@ -86,3 +85,11 @@ class ContactCard:
                 cursor.execute('SELECT * FROM contactCards WHERE email=%s', (email,))
                 row = cursor.fetchone()
                 return cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10],row[11])
+
+    @classmethod
+    def findByPersonAndOrganization(cls, personUUID, organizationUUID):
+        with connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute('SELECT * FROM contactCards WHERE person_uuid=%s And organization_uuid=%s', (personUUID, organizationUUID, ))
+                rows = cursor.fetchall()
+                return [cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11]) for row in rows]

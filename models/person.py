@@ -34,3 +34,11 @@ class Person:
                 cursor.execute('SELECT * FROM persons WHERE uuid=%s', (uuid,))
                 row = cursor.fetchone()
                 return cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
+
+    @classmethod
+    def findByCalled(cls, personCalled):
+        with connect() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute('SELECT * FROM persons WHERE called ILIKE %s', ("%" + personCalled + "%",))
+                rows = cursor.fetchall()
+                return [cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]) for row in rows]
