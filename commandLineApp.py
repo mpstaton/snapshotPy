@@ -10,12 +10,17 @@ import uuid
 
 def getStrInput(param):
     value = input("    " + param + ": ")
-    return value
+    if value == "nil":
+        return None
+    else:
+        return value
 
+def getIntInput(param):
+    return int(input(param))
 
 def getStrArrInput(param):
     value = input("    " + param + " (seperated by,): ")
-    if value == None:
+    if value == "nil":
         return None
     else:
         return [str(a) for a in value.split()]
@@ -23,7 +28,7 @@ def getStrArrInput(param):
 #TODO: find the correct way to convert date
 def getDateInput(param):
     value = input("    " + param + " (YYYY/MM/DD): ")
-    if value == None:
+    if value == "nil":
         return None
     else:
         return value
@@ -31,7 +36,7 @@ def getDateInput(param):
 #TODO: find the correct way to convert time
 def getTimeInput(param):
     value = input("    " + param + " (YYYY/MM/DD/HH/MM): ")
-    if value == None:
+    if value == "nil":
         return None
     else:
         return value
@@ -66,7 +71,7 @@ def findOrganization():
         print("Here are the organizations found: ")
         for i in range(0, len(organizationResults)):
             print("    {}. {}".format(str(i + 1), organizationResults[i].called))
-        i = input("Type the index of the organization you interacted with: ")
+        i = getIntInput("Type the index of the organization you interacted with: ")
         return organizationResults[i-1]
 
 
@@ -94,7 +99,7 @@ def findPerson(i):
         print("Here are the persons found: ")
         for i in range(0, len(personResults)):
             print("    {}. {}".format(str(i + 1), personResults[i].called))
-        i = input("Type the index of the person you interacted with: ")
+        i = getIntInput("Type the index of the person you interacted with: ")
         return personResults[i - 1]
 
 
@@ -125,7 +130,7 @@ def findContactCard(person, organization):
         print("Here are all the {} who works(ed) at {}: ".format(person.called, organization.called))
         for i in range(0, len(contactCardResults)):
             print("    {}. {}   {}  {}  {}".format(str(i + 1), person.givenName, person.surName, contactCardResults[i].title,  contactCardResults[i].email))
-        i = input("Type the index of the contact card you want: ")
+        i = getIntInput("Type the index of the contact card you want: ")
         return contactCardResults[i - 1]
 
 
@@ -134,7 +139,7 @@ def addInteractionStepByStep():
     interaction = Interaction()
     organization = findOrganization()
     contactCards = []
-    numContact = input("How many people did you interact at this interaction: ")
+    numContact = getIntInput("How many people did you interact at this interaction: ")
     for i in range(numContact):
         person = findPerson(i)
         contactCards.append(findContactCard(person, organization))
@@ -142,7 +147,7 @@ def addInteractionStepByStep():
     interaction.interactionType = getStrInput("Interaction type")
     interaction.startTime = getTimeInput("Start time")
     interaction.endTime = getTimeInput("End time")
-    interaction.contactCard_uuids = contactCards
+    interaction.contactCard_uuids = [contactCard.uuid for contactCard in contactCards]
     interaction.addToDB()
 
 
