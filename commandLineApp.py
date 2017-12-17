@@ -25,7 +25,7 @@ def getStrArrInput(param):
         return [str(a) for a in value.split()]
 
 def getDateInput(param):
-    value = input("    " + param + " (MM/DD/YYYY): ")
+    value = input("    " + param + " (YYYY/MM/DD): ")
     if value == "":
         return None
     else:
@@ -146,9 +146,7 @@ def addInteractionStepByStep():
     print("Enter more details of the interaction: type, start time, end time, location")
     print("Press Enter not present.")
     interaction.interactionType = getStrInput("Interaction type")
-    #TODO: add a date param to interaction?
-    interaction.startTime = getTimeInput("Start time")
-    interaction.endTime = getTimeInput("End time")
+    interaction.date = getDateInput("Date")
     interaction.contactCard_uuids = [contactCard.uuid for contactCard in contactCards]
     interaction.addToDB()
 
