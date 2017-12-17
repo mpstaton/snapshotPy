@@ -1,14 +1,14 @@
 from database import connect
-import uuid
+import uuid as uuidpkg
 import psycopg2.extras
 
 class CollectedDataPoint:
-    def __init__(self, variableHandle=None, timeFrame=None, value=None, organization_uuid=None, uuid=uuid.uuid4(), interactionMaterial_uuid=None):
+    def __init__(self, variableHandle=None, timeFrame=None, value=None, organization_uuid=None, uuid=None, interactionMaterial_uuid=None):
         self.variableHandle = variableHandle
         self.timeFrame = timeFrame
         self.value = value
         self.organization_uuid = organization_uuid
-        self.uuid = uuid
+        self.uuid = uuidpkg.uuid4() if uuid is None else uuid
         self.interactionMaterial_uuid = interactionMaterial_uuid
 
         psycopg2.extras.register_uuid()

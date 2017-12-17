@@ -1,12 +1,12 @@
 from database import connect
-import uuid
+import uuid as uuidpkg
 import psycopg2.extras
 import psycopg2.extensions as exten
 
 class ContactCard:
     def __init__(self, person_uuid=None, title=None, organization_uuid=None, email=None,
                  mobileLine=None, officeDirectLine=None, startDate=None, endDate=None,
-                 roleDescription=None, location_uuid=None, uuid=uuid.uuid4()):
+                 roleDescription=None, location_uuid=None, uuid=None):
         self.person_uuid = person_uuid
         self.title = title
         self.organization_uuid = organization_uuid
@@ -17,7 +17,7 @@ class ContactCard:
         self.endDate = endDate
         self.roleDescription = roleDescription
         self.location_uuid = location_uuid
-        self.uuid = uuid
+        self.uuid = uuidpkg.uuid4() if uuid is None else uuid
 
         psycopg2.extras.register_uuid()
 

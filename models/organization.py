@@ -1,17 +1,17 @@
 from database import connect
-import uuid
+import uuid as uuidpkg
 import psycopg2.extras
 
 
 class Organization:
-    def __init__(self, called=None, longName=None, legalName=None, uri=None, emailSuffix=None, uuid=uuid.uuid4(),
+    def __init__(self, called=None, longName=None, legalName=None, uri=None, emailSuffix=None, uuid=None,
                  classifiers=None):
         self.called = called
         self.longName = longName
         self.legalName = legalName
         self.uri = uri
         self.emailSuffix = emailSuffix
-        self.uuid = uuid
+        self.uuid = uuidpkg.uuid4() if uuid is None else uuid
         self.classifiers = classifiers
 
         psycopg2.extras.register_uuid()

@@ -1,18 +1,18 @@
 from database import connect
-import uuid
+import uuid as uuidpkg
 import psycopg2.extras
 
 
 class Person:
     def __init__(self, called=None, givenName=None, surName=None, maidenName=None, gender=None, birthDate=None,
-                 uuid=uuid.uuid4(), hasUserAccount=False, isTeamMember=False):
+                 uuid=None, hasUserAccount=False, isTeamMember=False):
         self.called = called
         self.givenName = givenName
         self.surName = surName
         self.maidenName = maidenName
         self.gender = gender
         self.birthDate = birthDate
-        self.uuid = uuid
+        self.uuid = uuidpkg.uuid4() if uuid is None else uuid
         self.hasUserAccount = hasUserAccount
         self.isTeamMember = isTeamMember
 

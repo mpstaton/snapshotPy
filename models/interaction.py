@@ -1,12 +1,12 @@
 from database import connect
-import uuid
+import uuid as uuidpkg
 import psycopg2.extras
 import psycopg2.extensions as exten
 
 class Interaction:
     # interactionMaterial_uuids and contactCard_uuids can't be None, as the adaptor of uuid[] doesn't adapt None type
     def __init__(self, location_uuid=None, interactionType=None, startTime=None, endTime=None,
-                 uuid=uuid.uuid4(), interactionMaterial_uuids=[], contactCard_uuids=[]):
+                 uuid=uuidpkg.uuid4(), interactionMaterial_uuids=[], contactCard_uuids=[]):
         self.location_uuid = location_uuid
         self.interactionType = interactionType
         self.startTime = startTime

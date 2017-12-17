@@ -1,18 +1,18 @@
 from database import connect
-import uuid
+import uuid as uuidpkg
 import psycopg2.extras
 
 
 class VariableDocumentation:
     def __init__(self, handle=None, completeName=None, acronym=None, inputVariations=None, classifiers=None,
-                 description=None, uuid=uuid.uuid4()):
+                 description=None, uuid=None):
         self.handle = handle
         self.completeName = completeName
         self.acronym = acronym
         self.inputVariations = inputVariations
         self.classifiers = classifiers
         self.description = description
-        self.uuid = uuid
+        self.uuid = uuidpkg.uuid4() if uuid is None else uuid
 
         psycopg2.extras.register_uuid()
 

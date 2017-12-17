@@ -5,12 +5,11 @@ from models.interactionMaterial import InteractionMaterial
 from models.organization import Organization
 from models.person import Person
 from models.variableDocumentation import VariableDocumentation
-import uuid
 
 
 def getStrInput(param):
     value = input("    " + param + ": ")
-    if value == "nil":
+    if value == "":
         return None
     else:
         return value
@@ -20,23 +19,21 @@ def getIntInput(param):
 
 def getStrArrInput(param):
     value = input("    " + param + " (seperated by,): ")
-    if value == "nil":
+    if value == "":
         return None
     else:
         return [str(a) for a in value.split()]
 
-#TODO: find the correct way to convert date
 def getDateInput(param):
-    value = input("    " + param + " (YYYY/MM/DD): ")
-    if value == "nil":
+    value = input("    " + param + " (MM/DD/YYYY): ")
+    if value == "":
         return None
     else:
         return value
 
-#TODO: find the correct way to convert time
 def getTimeInput(param):
-    value = input("    " + param + " (YYYY/MM/DD/HH/MM): ")
-    if value == "nil":
+    value = input("    " + param + " (HH:MM): ")
+    if value == "":
         return None
     else:
         return value
@@ -52,7 +49,7 @@ def getBoolInput(param):
 def createOrganization(orgCalled):
     organization = Organization(called=orgCalled)
     print("Enter more details of the organization: long name, legal name, uri, emailSuffix, classifiers")
-    print("Enter nil if not present.")
+    print("Press Enter if not present.")
     organization.longName = getStrInput("Long name")
     organization.legalName = getStrInput("Legal name")
     organization.uri = getStrInput("Uri")
@@ -78,7 +75,7 @@ def findOrganization():
 def createPerson(personCalled):
     person = Person(called=personCalled)
     print("Enter more details of the person: given name, maiden name, birth date, has user account, team member")
-    print("Enter None if not present.")
+    print("Press Enter if not present.")
     person.givenName = getStrInput("Given name")
     person.surName = getStrInput("Surname")
     person.maidenName = getStrInput("Maiden name")
@@ -86,8 +83,9 @@ def createPerson(personCalled):
     person.birthDate = getDateInput("Birth date")
     person.hasUserAccount = getBoolInput("Do they have user account")
     person.isTeamMember = getBoolInput("Are they a team member")
+    print("person uuid: " + str(person.uuid))
     person.addToDB()
-    return  person
+    return person
 
 def findPerson(i):
     personCalled = input("Search for person {} you interacted with: ".format(i+1))
@@ -104,9 +102,9 @@ def findPerson(i):
 
 
 def createContactCard(personUUID, organizationUUID):
-    contactCard = ContactCard(person_uuid = personUUID, organization_uuid = organizationUUID)
+    contactCard = ContactCard(person_uuid=personUUID, organization_uuid = organizationUUID)
     print("Enter more details of the contact card: title, email, mobile line, office direct line, start date, end date, role description, location")
-    print("Enter nil if not present.")
+    print("Press Enter if not present.")
     contactCard.title = getStrInput("Title")
     contactCard.email = getStrInput("Email")
     contactCard.mobileLine = getStrInput("Mobile line")
@@ -115,7 +113,9 @@ def createContactCard(personUUID, organizationUUID):
     contactCard.endDate = getDateInput("End date")
     contactCard.roleDescription = getStrInput("Role description")
     # TODO: contactCard.location_uuid
+    print("contactCard uuid: " + str(contactCard.uuid))
     contactCard.addToDB()
+
     return contactCard
 
 
@@ -144,11 +144,12 @@ def addInteractionStepByStep():
         person = findPerson(i)
         contactCards.append(findContactCard(person, organization))
     print("Enter more details of the interaction: type, start time, end time, location")
+    print("Press Enter not present.")
     interaction.interactionType = getStrInput("Interaction type")
+    #TODO: add a date param to interaction?
     interaction.startTime = getTimeInput("Start time")
     interaction.endTime = getTimeInput("End time")
     interaction.contactCard_uuids = [contactCard.uuid for contactCard in contactCards]
     interaction.addToDB()
-
 
 addInteractionStepByStep()
