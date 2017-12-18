@@ -5,7 +5,7 @@ from models.interactionMaterial import InteractionMaterial
 from models.organization import Organization
 from models.person import Person
 from models.variableDocumentation import VariableDocumentation
-
+from S3Bucket import S3Bucket
 
 def getStrInput(param):
     value = input("    " + param + ": ")
@@ -25,11 +25,11 @@ def getStrArrInput(param):
         return [str(a) for a in value.split()]
 
 def getDateInput(param):
-    value = input("    " + param + " (YYYY/MM/DD): ")
+    value = input("    " + param + " (YYYYMMDD): ")
     if value == "":
         return None
     else:
-        return value
+        return value[:4] + "-" + value[4:6] + "-" + value[6:]
 
 def getTimeInput(param):
     value = input("    " + param + " (HH:MM): ")
@@ -83,7 +83,6 @@ def createPerson(personCalled):
     person.birthDate = getDateInput("Birth date")
     person.hasUserAccount = getBoolInput("Do they have user account")
     person.isTeamMember = getBoolInput("Are they a team member")
-    print("person uuid: " + str(person.uuid))
     person.addToDB()
     return person
 
@@ -113,7 +112,6 @@ def createContactCard(personUUID, organizationUUID):
     contactCard.endDate = getDateInput("End date")
     contactCard.roleDescription = getStrInput("Role description")
     # TODO: contactCard.location_uuid
-    print("contactCard uuid: " + str(contactCard.uuid))
     contactCard.addToDB()
 
     return contactCard
@@ -134,6 +132,24 @@ def findContactCard(person, organization):
         return contactCardResults[i - 1]
 
 
+def createInteractionMaterial(interaction, organization):
+    material = InteractionMaterial(interaction_uuid=interaction.uuid, organization_uuid=organization.uuid)
+    print("Enter more details of the material: name, type, path to file, office direct line, start date, end date, role description, location")
+    print("Press Enter if not present.")
+    # TODO: path to file doesn't take in space in the filename yet
+    path = getStrInput("Path to file")
+    fileName = path.split("/")[-1]
+    material.name = fileName.split(".")[0]
+    material.fileType = fileName.split(".")[1]
+    # The string components in the following line must not be None
+    material.fileKey = organization.called + "/InteractionMaterial/" + interaction.date + "/" + material.name + "." + material.fileType
+    material.url = S3Bucket.getUrl(material.fileKey)
+    material.contactCard_uuids = interaction.contactCard_uuids
+
+    S3Bucket.add(path, material.fileKey)
+    material.addToDB()
+
+
 def addInteractionStepByStep():
     print("Follow the steps below to add an interaction.")
     interaction = Interaction()
@@ -143,11 +159,17 @@ def addInteractionStepByStep():
     for i in range(numContact):
         person = findPerson(i)
         contactCards.append(findContactCard(person, organization))
+
     print("Enter more details of the interaction: type, start time, end time, location")
     print("Press Enter not present.")
     interaction.interactionType = getStrInput("Interaction type")
     interaction.date = getDateInput("Date")
     interaction.contactCard_uuids = [contactCard.uuid for contactCard in contactCards]
     interaction.addToDB()
+
+    numMaterial = getIntInput("How many materials do you want to add to this interaction: ")
+    for i in range(numMaterial):
+        material = createInteractionMaterial(interaction, organization)
+        
 
 addInteractionStepByStep()

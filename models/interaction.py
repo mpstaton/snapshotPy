@@ -24,8 +24,8 @@ class Interaction:
                 cursor.execute(
                     'INSERT INTO interactions (location_uuid, interactionType, startTime, endTime, uuid, '
                     'interactionMaterial_uuids, contactCard_uuids, date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
-                    (self.location_uuid, self.interactionType, self.date, self.startTime, self.endTime, self.uuid,
-                     exten.adapt(self.interactionMaterial_uuids), exten.adapt(self.contactCard_uuids)))
+                    (self.location_uuid, self.interactionType, self.startTime, self.endTime, self.uuid,
+                     exten.adapt(self.interactionMaterial_uuids), exten.adapt(self.contactCard_uuids), self.date))
 
     @classmethod
     def getByUUID(cls, uuid):
