@@ -1,3 +1,4 @@
+
 from models.collectedDataPoint import CollectedDataPoint
 from models.contactCard import ContactCard
 from models.interaction import Interaction
@@ -132,12 +133,10 @@ def findContactCard(person, organization):
         return contactCardResults[i - 1]
 
 
-def createInteractionMaterial(interaction, organization):
+def createInteractionMaterial(interaction, organization, i):
     material = InteractionMaterial(interaction_uuid=interaction.uuid, organization_uuid=organization.uuid)
-    print("Enter more details of the material: name, type, path to file, office direct line, start date, end date, role description, location")
-    print("Press Enter if not present.")
     # TODO: path to file doesn't take in space in the filename yet
-    path = getStrInput("Path to file")
+    path = getStrInput("Path to file" + str(i+1))
     fileName = path.split("/")[-1]
     material.name = fileName.split(".")[0]
     material.fileType = fileName.split(".")[1]
@@ -145,12 +144,53 @@ def createInteractionMaterial(interaction, organization):
     material.fileKey = organization.called + "/InteractionMaterial/" + interaction.date + "/" + material.name + "." + material.fileType
     material.url = S3Bucket.getUrl(material.fileKey)
     material.contactCard_uuids = interaction.contactCard_uuids
-
     S3Bucket.add(path, material.fileKey)
     material.addToDB()
 
 
+def createVariableDocumentation(variableHandle):
+    variable = VariableDocumentation(handle=variableHandle)
+    print("Enter more details of the variable: complete name, acronym, description" )
+    print("Press Enter if not present.")
+    variable.completeName = getStrInput("Complete name")
+    variable.acronym = getStrInput("Acronym")
+    variable.description = getStrInput("Description")
+    variable.addToDB()
+    return variable
+
+
+def findVariable(i):
+    variableHandle = input("Search for handle of your variable {}: ".format(i + 1))
+    variableResults = VariableDocumentation.findByHandle(variableHandle)
+    if len(variableResults) == 0:
+        print(variableHandle + " is not in the database, please add it in")
+        return createVariableDocumentation(variableHandle)
+    else:
+        variableFound = variableResults[0]
+        print("Variable handle: {}  Complete name: {}   Description: {}".format(variableFound.handle, variableFound.completeName, variableFound.description))
+        chooseThisHandle = getBoolInput("Do you mean this variable")
+        if chooseThisHandle:
+            return variableFound
+        else:
+            print("Variable handles need to be unique. Search again.")
+            return findVariable(i)
+
+
+
+def createDataPoint(interaction, organization, i):
+    dataPoint = CollectedDataPoint(interaction_uuid=interaction.uuid, organization_uuid=organization.uuid)
+    variable = findVariable(i)
+    print("Enter more details of the data point: time frame, value" )
+    print("Press Enter if not present.")
+    dataPoint.variableHandle = variable.handle
+    dataPoint.timeFrame = getStrInput("Time frame")
+    dataPoint.value = getStrInput("Value")
+    dataPoint.variable_uuid = variable.uuid
+    dataPoint.addToDB()
+
+
 def addInteractionStepByStep():
+    # link contact cards
     print("Follow the steps below to add an interaction.")
     interaction = Interaction()
     organization = findOrganization()
@@ -160,16 +200,27 @@ def addInteractionStepByStep():
         person = findPerson(i)
         contactCards.append(findContactCard(person, organization))
 
+    # interaction details
     print("Enter more details of the interaction: type, start time, end time, location")
     print("Press Enter not present.")
     interaction.interactionType = getStrInput("Interaction type")
     interaction.date = getDateInput("Date")
     interaction.contactCard_uuids = [contactCard.uuid for contactCard in contactCards]
+    print(interaction.uuid)
     interaction.addToDB()
+    print("INTERACTION CREATED.")
 
+    # link materials
     numMaterial = getIntInput("How many materials do you want to add to this interaction: ")
     for i in range(numMaterial):
-        material = createInteractionMaterial(interaction, organization)
+        createInteractionMaterial(interaction, organization, i)
+
+    # link data points
+    numDataPoint = getIntInput("How many data points do you want to add to this interaction: ")
+    for i in range(numDataPoint):
+        createDataPoint(interaction, organization, i)
+
+    print("DONE!")
         
 
 addInteractionStepByStep()

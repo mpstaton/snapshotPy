@@ -3,10 +3,10 @@ import boto3
 
 class S3Bucket:
 
-    BUCKET_NAME = 'snapshot-dev-bucket'
+    BUCKET_NAME = 'snapshot-dev-s3bucket'
     BUCKET_URL = "https://s3-us-west-1.amazonaws.com/" + BUCKET_NAME
-    AWS_ID = 'AKIAIB3LH7JO2JESBLDQ'
-    AWS_KEY = 'sjKmEOK8VpehX46+Cm1i65JBTatmWFNZexUX419q'
+    AWS_ID = 'AKIAIMJPSR5H46TZ5NQQ'
+    AWS_KEY = 'uLicFNddTs1KuxqHRpo4fi4erIQmRqEVFMywqYQw'
 
     s3 = boto3.resource('s3', aws_access_key_id=AWS_ID, aws_secret_access_key=AWS_KEY)
 
