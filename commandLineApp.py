@@ -207,7 +207,6 @@ def addInteractionStepByStep():
     interaction.interactionType = getStrInput("Interaction type")
     interaction.date = getDateInput("Date")
     interaction.contactCard_uuids = [contactCard.uuid for contactCard in contactCards]
-    print(interaction.uuid)
     interaction.addToDB()
     print("INTERACTION CREATED.")
 
@@ -224,4 +223,4 @@ def addInteractionStepByStep():
     print("DONE!")
         
 
-#addInteractionStepByStep()
+addInteractionStepByStep()
