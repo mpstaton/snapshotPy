@@ -82,8 +82,8 @@ def createPerson(personCalled):
     person.maidenName = getStrInput("Maiden name")
     person.gender = getStrInput("Gender")
     person.birthDate = getDateInput("Birth date")
-    person.hasUserAccount = getBoolInput("Do they have user account")
-    person.isTeamMember = getBoolInput("Are they a team member")
+    # person.hasUserAccount = getBoolInput("Do they have user account")
+    # person.isTeamMember = getBoolInput("Are they a team member")
     person.addToDB()
     return person
 
@@ -135,13 +135,14 @@ def findContactCard(person, organization):
 
 def createInteractionMaterial(interaction, organization, i):
     material = InteractionMaterial(interaction_uuid=interaction.uuid, organization_uuid=organization.uuid)
-    # TODO: path to file doesn't take in space in the filename yet
-    path = getStrInput("Path to file" + str(i+1))
+    path = getStrInput("Path to file" + str(i + 1))
+    # File name should not have"/" inside
     fileName = path.split("/")[-1]
+    # file name should not have"." inside
     material.name = fileName.split(".")[0]
     material.fileType = fileName.split(".")[1]
     # The string components in the following line must not be None
-    material.fileKey = organization.called + "/InteractionMaterial/" + interaction.date + "/" + material.name + "." + material.fileType
+    material.fileKey = organization.called + "/Interaction Material/" + interaction.date + "/" + material.name + "." + material.fileType
     material.url = S3Bucket.getUrl(material.fileKey)
     material.contactCard_uuids = interaction.contactCard_uuids
     S3Bucket.add(path, material.fileKey)
@@ -223,4 +224,4 @@ def addInteractionStepByStep():
     print("DONE!")
         
 
-addInteractionStepByStep()
+#addInteractionStepByStep()

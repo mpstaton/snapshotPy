@@ -37,7 +37,7 @@ class Organization:
     def findByCalled(cls, called):
         with connect() as conn:
             with conn.cursor() as cursor:
-                cursor.execute('SELECT * FROM organizations WHERE called ILIKE %s', ("%" + called + "%", ))
+                cursor.execute('SELECT * FROM organizations WHERE called ILIKE %s OR ', ("%" + called + "%", ))
                 rows = cursor.fetchall()
                 return [cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7]) for row in rows]
 

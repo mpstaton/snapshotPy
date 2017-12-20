@@ -5,8 +5,8 @@ class S3Bucket:
 
     BUCKET_NAME = 'snapshot-dev-s3bucket'
     BUCKET_URL = "https://s3-us-west-1.amazonaws.com/" + BUCKET_NAME
-    AWS_ID = 'AKIAIMJPSR5H46TZ5NQQ'
-    AWS_KEY = 'uLicFNddTs1KuxqHRpo4fi4erIQmRqEVFMywqYQw'
+    AWS_ID = 'AKIAJV6QHQ3ASPYU4DWA'
+    AWS_KEY = 'gmUgNpDHhEcSNJcSAIsRzd2fywEO+esx0G7aQnx5'
 
     s3 = boto3.resource('s3', aws_access_key_id=AWS_ID, aws_secret_access_key=AWS_KEY)
 
@@ -17,19 +17,21 @@ class S3Bucket:
 
     @classmethod
     def getUrl(cls, fileKey):
-        return cls.BUCKET_URL + "/" + fileKey
+        urlKey = fileKey.replace(" ", "+")
+        return cls.BUCKET_URL + "/" + urlKey
 
     @classmethod
     def delete(cls,fileKey):
         cls.s3.Object(cls.BUCKET_NAME, fileKey).delete()
 
 
-# Examples:
-# S3Bucket.add('../1.png', 'folder2/pic1.png')
-# S3Bucket.delete("folder1/pic1.png")
+# # Examples:
+# S3Bucket.add('../f 1.pdf', 'folder 2/file 1.pdf')
+# S3Bucket.delete("org/InteractionMaterial/20121212/cultural 1.docx")
 #
-# for bucket in s3.buckets.all():
+#
+# for bucket in S3Bucket.s3.buckets.all():
 #     for object in bucket.objects.all():
-#         mypdf = s3.Object(bucket.name, 'node.pdf')
-#         print(mypdf.content_length)
+#         print(object.key)
+
 
