@@ -5,8 +5,8 @@ class S3Bucket:
 
     BUCKET_NAME = 'snapshot-dev-s3bucket'
     BUCKET_URL = "https://s3-us-west-1.amazonaws.com/" + BUCKET_NAME
-    AWS_ID = 'AKIAJV6QHQ3ASPYU4DWA'
-    AWS_KEY = 'gmUgNpDHhEcSNJcSAIsRzd2fywEO+esx0G7aQnx5'
+    AWS_ID = 'AKIAJHIKEBDCJEEA4W6Q'
+    AWS_KEY = 'AYQCTb8HeFTxZ1SKYbI3h6mp34CWhPos9kIsS+GV'
 
     s3 = boto3.resource('s3', aws_access_key_id=AWS_ID, aws_secret_access_key=AWS_KEY)
 
@@ -26,7 +26,7 @@ class S3Bucket:
 
 
 # # Examples:
-# S3Bucket.add('../f 1.pdf', 'folder 2/file 1.pdf')
+# S3Bucket.add('../f 1.pdf', 'file 1.pdf')
 # S3Bucket.delete("org/InteractionMaterial/20121212/cultural 1.docx")
 #
 #
